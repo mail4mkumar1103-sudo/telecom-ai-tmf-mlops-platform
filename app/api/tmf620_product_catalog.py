@@ -1,4 +1,11 @@
 from fastapi import APIRouter, HTTPException	
+from pydantic import BaseModel
+
+
+class Product(BaseModel):
+    id: str
+    name: str
+    price: int
 	
 router = APIRouter()	
 	
@@ -21,10 +28,10 @@ def get_product_by_id(product_id: str):
 
 
 @router.put("/productOffering/{product_id}")
-def update_product(product_id: str, updated_product: dict):
+def update_product(product_id: str, updated_product: Product):
     for product in PRODUCTS:
         if product["id"] == product_id:
-            product.update(updated_product)
+            product.update(updated_product.dict())
             return product
     raise HTTPException(status_code=404, detail="Product not found")
 
@@ -36,3 +43,9 @@ def delete_product(product_id: str):
             PRODUCTS.remove(product)
             return {"message": "Product deleted"}
     raise HTTPException(status_code=404, detail="Product not found")    
+
+
+@router.post("/productOffering")
+def create_product(product: Product):
+    PRODUCTS.append(product.dict())
+    return product
