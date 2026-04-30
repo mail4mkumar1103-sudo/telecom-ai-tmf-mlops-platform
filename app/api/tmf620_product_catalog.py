@@ -19,3 +19,20 @@ def get_product_by_id(product_id: str):
             return product
     raise HTTPException(status_code=404, detail="Product not found")
 
+
+@router.put("/productOffering/{product_id}")
+def update_product(product_id: str, updated_product: dict):
+    for product in PRODUCTS:
+        if product["id"] == product_id:
+            product.update(updated_product)
+            return product
+    raise HTTPException(status_code=404, detail="Product not found")
+
+
+@router.delete("/productOffering/{product_id}")
+def delete_product(product_id: str):
+    for product in PRODUCTS:
+        if product["id"] == product_id:
+            PRODUCTS.remove(product)
+            return {"message": "Product deleted"}
+    raise HTTPException(status_code=404, detail="Product not found")    
